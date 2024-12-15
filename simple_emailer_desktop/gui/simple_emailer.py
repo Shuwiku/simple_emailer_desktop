@@ -6,8 +6,8 @@ from pathlib import Path
 from typing import Optional
 
 from dotenv import load_dotenv
-from simple_emailer import send_email_quick
 from PyQt6.QtWidgets import QWidget
+from simple_emailer import send_email_quick
 
 from .forms import Ui_FormSimpleEmailer
 
@@ -37,6 +37,10 @@ class SimpleEmailer(
         self.email_dir = Path("emails").resolve()
 
         self._setup()
+
+    def _exit(self) -> None:
+        """Закрывает окно."""
+        self.close()
 
     def _send_email(self) -> None:
         """Отправляет письмо согласно вводу пользователя."""
@@ -79,6 +83,9 @@ class SimpleEmailer(
         """Настраивает отображение элементов в окне."""
         self._setup_emails_list()
 
+        self.button_exit.clicked.connect(
+            slot=self._exit
+        )
         self.button_send_email.clicked.connect(
             slot=self._send_email
         )
