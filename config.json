@@ -1,0 +1,23 @@
+{
+    "emails": {
+        "_default": "example_without_args",
+        "example_with_args": {
+            "filename": "example_with_args.html",
+            "subject": "С днем рождения!",
+            "type": "html",
+            "with_args": true
+        },
+        "example_without_args": {
+            "filename": "example_without_args.html",
+            "subject": "Добро пожаловать в нашу компанию!",
+            "type": "html",
+            "with_args": false
+        }
+    },
+    "logging": {
+        "file_name": "logs.log",
+        "format_file": "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | <level>{level: <8}</level> | <level>{message}</level>",
+        "format_std": "<level>{level: <8}</level> | <level>{message}</level>",
+        "level": "TRACE"
+    }
+}

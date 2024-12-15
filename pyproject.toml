@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "simple-emailer-desktop"
+version = "0.1.0"
+description = ""
+authors = [
+    "Олег <shuwiku@gmail.com>"
+]
+readme = "README.md"
+license = "MIT"
+repository = "https://github.com/Shuwiku/simple_emailer_desktop"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pyqt6 = "^6.8.0"
+simple-emailer = {git = "https://github.com/Shuwiku/simple_emailer.git"}
+python-dotenv = "^1.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
