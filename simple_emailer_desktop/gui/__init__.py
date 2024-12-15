@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
-"""DOCSTRING."""
+"""Графический интерфейс приложения."""
 
-from .simple_emailer import SimpleEmailer
+# Это позволяет импортировать класс напрямую из модуля
+# Вместо:   from gui.simple_emailer import SimpleEmailer
+# Имеем:    from gui import SimpleEmailer
+from .simple_emailer import SimpleEmailer  # noqa: F401

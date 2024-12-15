@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-"""DOCSTRING."""
+"""Главное окно приложения."""
 
 import os
 from pathlib import Path
+from typing import Optional
 
 from dotenv import load_dotenv
 from simple_emailer import send_email_quick
@@ -15,59 +16,53 @@ class SimpleEmailer(
     QWidget,
     Ui_FormSimpleEmailer
 ):
-    """DOCSTRING."""
+    """Главное окно приложения."""
 
+    # Конфигурация приложения
     config: dict
+
+    # Абсолютный путь к директории с файлами писем
+    email_dir: Path
 
     def __init__(
         self,
         config: dict
     ) -> None:
-        """DOCSTRING."""
+        """Инициализация и настройка окна."""
         super().__init__()
         self.setupUi(self)
         self.setFixedSize(self.size())
 
         self.config = config
-        self.email_dir: Path = Path("emails").resolve()
+        self.email_dir = Path("emails").resolve()
 
         self._setup()
 
-    def _setup(self) -> None:
-        """DOCSTRING."""
-        self._setup_emails_list()
-        self.combo_box_email_type.addItems(
-            [
-                "html",
-                "plain",
-                "markdown"
-            ]
-        )
-        self.check_box_use_env_variables.setChecked(True)
-        self.check_box_use_env_variables.clicked.connect(
-            slot=self._setup_sender_data
-        )
-        self.line_edit_sender_email.setEnabled(False)
-        self.line_edit_sender_password.setEnabled(False)
-        self.button_send_email.clicked.connect(
-            slot=self._send_email
-        )
+    def _send_email(self) -> None:
+        """Отправляет письмо согласно вводу пользователя."""
+        if self.check_box_use_env_variables.isChecked():
+            load_dotenv()
+            sender_email: Optional[str] = os.getenv("SENDER_EMAIL")
+            sender_password: Optional[str] = os.getenv("SENDER_PASSWORD")
+            if sender_email is None or sender_password is None:
+                return None
+        else:
+            sender_email: str = self.line_edit_sender_email.text()
+            sender_password: str = self.line_edit_sender_password.text()
 
-    def _setup_emails_list(self) -> None:
-        """DOCSTRING."""
-        emails: list = list(self.config["emails"].keys())
-        emails.remove("_default")
-
-        for i in emails:
-            self.list_widget_emails_list.addItem(i)
-
-        self.list_widget_emails_list.clicked.connect(
-            slot=self._setup_by_email
+        send_email_quick(
+            email_text=self.text_edit_email_text.toPlainText(),
+            recipient_email=self.line_edit_recipient_email.text(),
+            sender_email=sender_email,
+            sender_password=sender_password,
+            subject=self.line_edit_email_subject.text(),
+            email_type=self.combo_box_email_type.currentText()
         )
 
-    def _setup_by_email(self) -> None:
-        """DOCSTRING."""
-        email = self.list_widget_emails_list.currentItem().text()  # type: ignore
+    def _set_email_data(self) -> None:
+        """Подставляет данные письма выбранного пользователем."""
+        email: str = \
+            self.list_widget_emails_list.currentItem().text()  # type: ignore
         email_config: dict = self.config["emails"][email]
 
         with open(
@@ -80,30 +75,44 @@ class SimpleEmailer(
         self.line_edit_email_subject.setText(email_config["subject"])
         self.text_edit_email_text.setPlainText(email_text)
 
+    def _setup(self) -> None:
+        """Настраивает отображение элементов в окне."""
+        self._setup_emails_list()
+
+        self.button_send_email.clicked.connect(
+            slot=self._send_email
+        )
+
+        self.check_box_use_env_variables.setChecked(True)
+        self.check_box_use_env_variables.clicked.connect(
+            slot=self._setup_sender_data
+        )
+
+        self.combo_box_email_type.addItems(
+            [
+                "html",
+                "plain",
+                "markdown"
+            ]
+        )
+
+        self.line_edit_sender_email.setEnabled(False)
+        self.line_edit_sender_password.setEnabled(False)
+
+    def _setup_emails_list(self) -> None:
+        """Настраивает список писем на основе данных из файла конфигурации."""
+        emails: list = list(self.config["emails"].keys())
+        emails.remove("_default")
+
+        for i in emails:
+            self.list_widget_emails_list.addItem(i)
+
+        self.list_widget_emails_list.clicked.connect(
+            slot=self._set_email_data
+        )
+
     def _setup_sender_data(self) -> None:
-        """DOCSTRING."""
+        """Настаивает поля с почтой и паролем отправителя."""
         is_enabled: bool = not self.check_box_use_env_variables.isChecked()
         self.line_edit_sender_email.setEnabled(is_enabled)
         self.line_edit_sender_password.setEnabled(is_enabled)
-
-    def _send_email(self) -> None:
-        """DOCSTRING."""
-        if self.check_box_use_env_variables.isChecked():
-            load_dotenv()
-            sender_email: ... = os.getenv("SENDER_EMAIL")
-            sender_password: ... = os.getenv("SENDER_PASSWORD")
-        else:
-            sender_email: str = self.line_edit_sender_email.text()
-            sender_password: str = self.line_edit_sender_password.text()
-        email_text: str = self.text_edit_email_text.toPlainText()
-        recipient_email: str = self.line_edit_recipient_email.text()
-        subject: str = self.line_edit_email_subject.text()
-        email_type: str = self.combo_box_email_type.currentText()
-        send_email_quick(
-            email_text=email_text,
-            recipient_email=recipient_email,
-            sender_email=sender_email,
-            sender_password=sender_password,
-            subject=subject,
-            email_type=email_type
-        )
