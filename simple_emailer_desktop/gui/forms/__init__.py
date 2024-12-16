@@ -5,3 +5,4 @@
 # Вместо:   from forms.simple_emailer import Ui_FormSimpleEmailer
 # Имеем:    from forms import Ui_FormSimpleEmailer
 from .simple_emailer import Ui_FormSimpleEmailer  # noqa: F401
+from .simple_emailer_about import Ui_FormSimpleEmailerAbout  # noqa: F401

@@ -10,6 +10,7 @@ from PyQt6.QtWidgets import QWidget
 from simple_emailer import send_email_quick
 
 from .forms import Ui_FormSimpleEmailer
+from .simple_emailer_about import SimpleEmailerAbout
 
 
 class SimpleEmailer(
@@ -37,6 +38,11 @@ class SimpleEmailer(
         self.email_dir = Path("emails").resolve()
 
         self._setup()
+
+    def _about(self) -> None:
+        """DOCSTRING."""
+        self.window_about = SimpleEmailerAbout()
+        self.window_about.show()
 
     def _exit(self) -> None:
         """Закрывает окно."""
@@ -83,6 +89,9 @@ class SimpleEmailer(
         """Настраивает отображение элементов в окне."""
         self._setup_emails_list()
 
+        self.button_about.clicked.connect(
+            slot=self._about
+        )
         self.button_exit.clicked.connect(
             slot=self._exit
         )
