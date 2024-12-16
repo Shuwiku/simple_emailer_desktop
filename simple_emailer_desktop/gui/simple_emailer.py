@@ -2,6 +2,7 @@
 """Главное окно приложения."""
 
 import os
+import sys
 from pathlib import Path
 from typing import Optional
 
@@ -47,8 +48,8 @@ class SimpleEmailer(
         self.window_about.show()
 
     def _exit(self) -> None:
-        """Закрывает окно."""
-        self.close()
+        """Закрывает приложение."""
+        sys.exit()
 
     def _send_email(self) -> None:
         """Отправляет письмо согласно вводу пользователя."""
