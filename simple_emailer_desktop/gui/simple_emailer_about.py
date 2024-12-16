@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""DOCSTRING."""
+"""Окно с информацией о приложении."""
 
 from PyQt6.QtGui import QPixmap
 from PyQt6.QtWidgets import QWidget
@@ -11,16 +11,19 @@ class SimpleEmailerAbout(
     QWidget,
     Ui_FormSimpleEmailerAbout
 ):
-    """DOCSTRING."""
+    """Окно с информацией о приложении."""
 
     def __init__(self) -> None:
-        """DOCSTRING."""
+        """Инициализация и настройка окна."""
         super().__init__()
         self.setupUi(self)
         self.setFixedSize(self.size())
 
+        self._setup()
+
+    def _setup(self) -> None:
+        """Настраивает отображение элементов в окне."""
         self.button_close.clicked.connect(
             slot=(lambda: self.close())
         )
-
         self.label_icon.setPixmap(QPixmap("icon.ico").scaled(91, 91))
