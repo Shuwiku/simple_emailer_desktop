@@ -123,7 +123,7 @@ class SimpleEmailer(
         for i in emails:
             self.list_widget_emails_list.addItem(i)
 
-        self.list_widget_emails_list.clicked.connect(
+        self.list_widget_emails_list.doubleClicked.connect(
             slot=self._set_email_data
         )
 
