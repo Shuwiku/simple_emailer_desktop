@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Optional
 
 from dotenv import load_dotenv
+from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QWidget
 from simple_emailer import send_email_quick
 
@@ -33,6 +34,7 @@ class SimpleEmailer(
         super().__init__()
         self.setupUi(self)
         self.setFixedSize(self.size())
+        self.setWindowIcon(QIcon("icon.ico"))
 
         self.config = config
         self.email_dir = Path("emails").resolve()
