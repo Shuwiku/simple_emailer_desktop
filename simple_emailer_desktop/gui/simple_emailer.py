@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
 """Главное окно приложения."""
 
-import os
 import sys
 from pathlib import Path
-from typing import Optional
 
-from dotenv import load_dotenv
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QWidget
 from simple_emailer import send_email_quick
@@ -14,6 +11,7 @@ from simple_emailer import send_email_quick
 from .forms import Ui_FormSimpleEmailer
 from .simple_emailer_about import SimpleEmailerAbout
 from .message_info import message_info
+from utils import get_env_sender_data
 
 
 class SimpleEmailer(
@@ -61,11 +59,10 @@ class SimpleEmailer(
     def _send_email(self) -> None:
         """Отправляет письмо согласно вводу пользователя."""
         if self.check_box_use_env_variables.isChecked():
-            load_dotenv()
-            sender_email: Optional[str] = os.getenv("SENDER_EMAIL")
-            sender_password: Optional[str] = os.getenv("SENDER_PASSWORD")
-            if sender_email is None or sender_password is None:
-                return None
+            sender_data: tuple[str, str] = get_env_sender_data()
+            sender_email: str = sender_data[0]
+            sender_password: str = sender_data[1]
+
         else:
             sender_email: str = self.line_edit_sender_email.text()
             sender_password: str = self.line_edit_sender_password.text()
