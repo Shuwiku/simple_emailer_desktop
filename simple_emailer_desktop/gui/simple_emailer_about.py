@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Окно с информацией о приложении."""
 
-from PyQt6.QtGui import QPixmap, QIcon
+from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QWidget
 
 from .forms import Ui_FormSimpleEmailerAbout
@@ -13,12 +13,21 @@ class SimpleEmailerAbout(
 ):
     """Окно с информацией о приложении."""
 
-    def __init__(self) -> None:
+    # Иконка в заголовке окна
+    icon: QIcon
+
+    def __init__(
+        self,
+        icon: QIcon
+    ) -> None:
         """Инициализация и настройка окна."""
         super().__init__()
+
+        self.icon = icon
+
         self.setupUi(self)
         self.setFixedSize(self.size())
-        self.setWindowIcon(QIcon("icon.ico"))
+        self.setWindowIcon(self.icon)
 
         self._setup()
 
@@ -27,4 +36,4 @@ class SimpleEmailerAbout(
         self.button_close.clicked.connect(
             slot=(lambda: self.close())
         )
-        self.label_icon.setPixmap(QPixmap("icon.ico").scaled(91, 91))
+        self.label_icon.setPixmap(self.icon.pixmap(91, 91))

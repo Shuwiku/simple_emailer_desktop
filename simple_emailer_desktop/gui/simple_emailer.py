@@ -13,6 +13,7 @@ from simple_emailer import send_email_quick
 
 from .forms import Ui_FormSimpleEmailer
 from .simple_emailer_about import SimpleEmailerAbout
+from .message_info import message_info
 
 
 class SimpleEmailer(
@@ -27,24 +28,30 @@ class SimpleEmailer(
     # Абсолютный путь к директории с файлами писем
     email_dir: Path
 
+    # Иконка в заголовке окна
+    icon: QIcon
+
     def __init__(
         self,
         config: dict
     ) -> None:
         """Инициализация и настройка окна."""
         super().__init__()
-        self.setupUi(self)
-        self.setFixedSize(self.size())
-        self.setWindowIcon(QIcon("icon.ico"))
 
         self.config = config
         self.email_dir = Path("emails").resolve()
+        self.icon = QIcon("icon.ico")
 
+        self.setupUi(self)
+        self.setFixedSize(self.size())
+        self.setWindowIcon(self.icon)
         self._setup()
 
     def _about(self) -> None:
-        """DOCSTRING."""
-        self.window_about = SimpleEmailerAbout()
+        """Выводит окно c информацией о приложении."""
+        self.window_about = SimpleEmailerAbout(
+            icon=self.icon
+        )
         self.window_about.show()
 
     def _exit(self) -> None:
@@ -70,6 +77,11 @@ class SimpleEmailer(
             sender_password=sender_password,
             subject=self.line_edit_email_subject.text(),
             email_type=self.combo_box_email_type.currentText()
+        )
+        message_info(
+            icon=self.icon,
+            text="Письмо успешно отправлено.",
+            title="Успех."
         )
 
     def _set_email_data(self) -> None:
