@@ -6,10 +6,11 @@ from pathlib import Path
 
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QWidget
-from simple_emailer import send_email_quick
+from simple_emailer import SimpleEmailerError, send_email_quick
 
 from .forms import Ui_FormSimpleEmailer
 from .simple_emailer_about import SimpleEmailerAbout
+from .message_error import message_error
 from .message_info import message_info
 from utils import get_env_sender_data
 
@@ -67,14 +68,23 @@ class SimpleEmailer(
             sender_email: str = self.line_edit_sender_email.text()
             sender_password: str = self.line_edit_sender_password.text()
 
-        send_email_quick(
-            email_text=self.text_edit_email_text.toPlainText(),
-            recipient_email=self.line_edit_recipient_email.text(),
-            sender_email=sender_email,
-            sender_password=sender_password,
-            subject=self.line_edit_email_subject.text(),
-            email_type=self.combo_box_email_type.currentText()
-        )
+        try:
+            send_email_quick(
+                email_text=self.text_edit_email_text.toPlainText(),
+                recipient_email=self.line_edit_recipient_email.text(),
+                sender_email=sender_email,
+                sender_password=sender_password,
+                subject=self.line_edit_email_subject.text(),
+                email_type=self.combo_box_email_type.currentText()
+            )
+        except SimpleEmailerError as e:
+            message_error(
+                icon=self.icon,
+                text=str(e),
+                title="Ошибка."
+            )
+            return None
+
         message_info(
             icon=self.icon,
             text="Письмо успешно отправлено.",
@@ -101,15 +111,9 @@ class SimpleEmailer(
         """Настраивает отображение элементов в окне."""
         self._setup_emails_list()
 
-        self.button_about.clicked.connect(
-            slot=self._about
-        )
-        self.button_exit.clicked.connect(
-            slot=self._exit
-        )
-        self.button_send_email.clicked.connect(
-            slot=self._send_email
-        )
+        self.button_about.clicked.connect(slot=self._about)
+        self.button_exit.clicked.connect(slot=self._exit)
+        self.button_send_email.clicked.connect(slot=self._send_email)
 
         self.check_box_use_env_variables.setChecked(True)
         self.check_box_use_env_variables.clicked.connect(
